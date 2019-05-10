@@ -1,7 +1,12 @@
 <%@ page contentType="text/html; charset=euc-kr" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$(".ct_list_pop:nth-child(4n+6)").css("background","whitesmoke");
+	});
+</script>
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>

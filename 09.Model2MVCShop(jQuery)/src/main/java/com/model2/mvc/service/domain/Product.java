@@ -40,7 +40,7 @@ public class Product {
 	}
 
 	public String getManuDate() {
-		return (manuDate != null?manuDate.replaceAll("-", ""):null);
+		return manuDate;
 	}
 
 	public void setManuDate(String manuDate) {
