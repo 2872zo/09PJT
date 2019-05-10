@@ -8,50 +8,64 @@
 <title>상품등록</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <link rel="stylesheet" href="/resources/demos/style.css">
 
-<script type="text/javascript" src="../javascript/calendar.js">
-</script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
-<!--
-function fncAddProduct(){
-	//Form 유효성 검증
- 	var name = document.detailForm.prodName.value;
-	var detail = document.detailForm.prodDetail.value;
-	var manuDate = document.detailForm.manuDate.value;
-	var price = document.detailForm.price.value;
+	$(function(){
+		$("#datepicker").datepicker();
+		$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+	    
+		$("#reset").on("click",function(){
+			resetData();
+		});
+		
+		$("#add").on("click",function(){
+			fncAddProduct();
+		});
+	});
+	
+	function fncAddProduct() {
+		//Form 유효성 검증
+		var name = $("input[name=prodName]").val();
+		var detail = $("input[name=prodDetail]").val();
+		var manuDate = $("input[name=manuDate]").val();
+		var price = $("input[name=price]").val();
 
-	if(name == null || name.length<1){
-		alert("상품명은 반드시 입력하여야 합니다.");
-		return;
-	}
-	if(detail == null || detail.length<1){
-		alert("상품상세정보는 반드시 입력하여야 합니다.");
-		return;
-	}
-	if(manuDate == null || manuDate.length<1){
-		alert("제조일자는 반드시 입력하셔야 합니다.");
-		return;
-	}
-	if(price == null || price.length<1){
-		alert("가격은 반드시 입력하셔야 합니다.");
-		return;
+		if (name == null || name.length < 1) {
+			alert("상품명은 반드시 입력하여야 합니다.");
+			return;
+		}
+		if (detail == null || detail.length < 1) {
+			alert("상품상세정보는 반드시 입력하여야 합니다.");
+			return;
+		}
+		if (manuDate == null || manuDate.length < 1) {
+			alert("제조일자는 반드시 입력하셔야 합니다.");
+			return;
+		}
+		if (price == null || price.length < 1) {
+			alert("가격은 반드시 입력하셔야 합니다.");
+			return;
+		}
+
+		$("form").attr("action","/product/addProduct");
+		$("form").attr("method","POST");
+		$("form").submit();
 	}
 
-	document.detailForm.action='/product/addProduct';
-	document.detailForm.submit();
-}
-
-function resetData(){
-	document.detailForm.reset();
-}
--->
+	function resetData() {
+		$("form").reset();
+	}
 </script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm" method="post">
+<form name="detailForm" enctype="multipart/form-data">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -114,10 +128,7 @@ function resetData(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" name="manuDate" readonly="readonly" class="ct_input_g"  
-						style="width: 100px; height: 19px"	maxLength="10" minLength="6"/>
-				&nbsp;<img src="../images/ct_icon_date.gif" width="15" height="15" 
-										onclick="show_calendar('document.detailForm.manuDate', document.detailForm.manuDate.value)"/>
+			<input type="text" name="manuDate" readonly="readonly" id="datepicker"/>
 		</td>
 	</tr>
 	<tr>
@@ -140,7 +151,7 @@ function resetData(){
 		<td width="104" class="ct_write">상품이미지</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input		type="text" name="fileName" class="ct_input_g" 
+			<input  multiple="multiple"		type="file" name="file" class="ct_input_g" 
 							style="width: 200px; height: 19px" maxLength="13"/>
 		</td>
 	</tr>
@@ -172,7 +183,7 @@ function resetData(){
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01"  style="padding-top: 3px;">
-					<a href="javascript:fncAddProduct();">등록</a>
+					<a href="#" id="add">등록</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -182,7 +193,7 @@ function resetData(){
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01"	 style="padding-top: 3px;">
-					<a href="javascript:resetData();">취소</a>
+					<a href="reset" id="reset">취소</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23"/>

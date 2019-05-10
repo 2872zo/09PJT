@@ -9,10 +9,28 @@
 
 <title>구매 진행</title>
 
-<script type="text/javascript" src="../javascript/calendar.js">
+<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </script>
 
 <script type="text/javascript">
+$(function(){
+	$("#add").on("click",function(){
+		fncAddPurchase();	
+	});
+	
+	$("#cancel").on("click",function(){
+		cancel();
+	});
+	
+	$("#datepicker").datepicker();
+	$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+});
+
 <!--
 function fncAddPurchase() {
 	document.addPurchase.submit();
@@ -198,10 +216,7 @@ function fncAddPurchase() {
 		<td width="104" class="ct_write">배송희망일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td width="200" class="ct_write01">
-			<input 	type="text" readonly="readonly" name="dlvyDate" class="ct_input_g" 
-							style="width: 100px; height: 19px" maxLength="20"/>
-			<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
-						onclick="show_calendar('document.addPurchase.dlvyDate', document.addPurchase.dlvyDate.value)"/>
+			<input 	type="text" readonly="readonly" id="datepicker" name="dlvyDate" class="ct_input_g" style="width: 100px; height: 19px" maxLength="20"/>
 		</td>
 	</tr>
 	<tr>
@@ -219,7 +234,7 @@ function fncAddPurchase() {
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="javascript:fncAddPurchase();">구매</a>
+						<a href="#" id="add">구매</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -229,7 +244,7 @@ function fncAddPurchase() {
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="javascript:history.go(-1)">취소</a>
+						<a href="#" id="cancel">취소</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>

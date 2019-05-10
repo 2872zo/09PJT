@@ -8,13 +8,64 @@
 <title>구매 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-	function fncGetPurchaseList(currentPage) {
-		document.detailForm.currentPage.value = currentPage;
-		document.detailForm.menu.value =  "${param.menu}";
+	$(function(){
+		var tranNoList = [${tranNoList}];
+		var prodNoList = [${prodNoList}];
 		
-		document.detailForm.submit();
+		$("tr.ct_list_pop td:nth-child(5)").css("color","red");
+		$("tr.ct_list_pop td:nth-child(5)").on("click",function(){
+			location.href = "/product/getProduct?prodNo="+prodNoList[$($("td",$(this).parent())[0]).text()-1];
+		});	
+		
+		$("tr.ct_list_pop td:nth-child(1)").css("color","red");
+		$("tr.ct_list_pop td:nth-child(1)").on("click",function(){
+			location.href = "/purchase/getPurchase?tranNo="+tranNoList[$(this).text()-1];
+		});	
+		
+		$("a:contains('배송출발')").on("click",function(){
+			fncUpdatePurchaseCode(${resultPage.currentPage},tranNoList[$($("td",$(this).parent().parent())[0]).text()-1], 2);
+		});
+		$("a:contains('수취확인')").on("click",function(){
+			fncUpdatePurchaseCode(${resultPage.currentPage},tranNoList[$($("td",$(this).parent().parent())[0]).text()-1], 3)
+		});
+		
+		$(".sort").on("click",function(){
+			fncSortList(${resultPage.currentPage},$(".sort").index($(this)));
+		});
+		
+		$("select[name=pageSize]").on("change",function(){
+			fncGetList(${resultPage.currentPage});
+		});
+		
+		$("#reset").on("click",function(){
+			fncResetSearchCondition();
+		});
+		
+		$("#unHidding").on("click",function(){
+			fncHiddingEmptyStock(${resultPage.currentPage},false);
+		});
+		$("#hidding").on("click",function(){
+			fncHiddingEmptyStock(${resultPage.currentPage},true);
+		});
+		
+		$("#prePage").on("click",function(){
+			fncGetList(${resultPage.beginUnitPage-1});
+		});
+		$(".page").on("click",function(){
+			fncGetList($(this).text());
+		});
+		$("#nextPage").on("click",function(){
+			fncGetList(${resultPage.endUnitPage+1});
+		});
+	});
+	
+	function fncGetList(currentPage){
+		$("input[name=currentPage]").val(currentPage);
+		$("input[name=menu]").val("${param.menu}");
+
+		$("form[name=detailForm]").submit();
 	}
 	
 	function fncUpdatePurchaseCode(currentPage,tranNo,tranCode){		
@@ -24,23 +75,21 @@
 		
 		location.href = URI;
 	}
-	
-	function fncSortList(currentPage, sortCode){
-		document.detailForm.currentPage.value = currentPage;
-		document.detailForm.menu.value = "${param.menu}";
-		document.detailForm.sortCode.value = sortCode;
 
-		document.detailForm.submit();
+	function fncSortList(currentPage, sortCode){
+		$("input[name=currentPage]").val(currentPage);
+		$("input[name=menu]").val("${param.menu}");
+		$("input[name=sortCode]").val(sortCode);
+
+		$("form").submit();
 	}
 
 	function fncHiddingEmptyStock(currentPage, hiddingEmptyStock){
-		document.detailForm.currentPage.value = currentPage;
-		document.detailForm.hiddingEmptyStock.value = hiddingEmptyStock;
+		$("input[name=currentPage]").val(currentPage);
+		$("input[name=hiddingEmptyStock]").val(hiddingEmptyStock);
 
-		document.detailForm.submit();
-		
+		$("form").submit();
 	}
-
 
 	function fncResetSearchCondition(){
 		location.href = "/purchase/listPurchase";
@@ -75,25 +124,26 @@
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncSortList(${resultPage.currentPage},4)">구매 취소된 상품</a>
+			<a href="#" class="sort"></a>
+			<a class="sort">배송 준비중인 상품</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},1)">배송 준비중인 상품</a>
+			<a  class="sort">배송중인 상품</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},2)">배송중인 상품</a>
+			<a  class="sort">거래 완료된 상품</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},3)">거래 완료된 상품</a>
+			<a  class="sort">구매 취소된 상품</a>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncHiddingEmptyStock(${resultPage.currentPage},true)">거래중인 상품만 보기</a>
+			<a  id="hidding">거래중인 상품만 보기</a>
 			&nbsp;
-			<a href="javascript:fncHiddingEmptyStock(${resultPage.currentPage},false)">모든 상품 보기</a>
+			<a  id="unHidding">모든 상품 보기</a>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncResetSearchCondition();">검색 조건 초기화</a>
+			<a  id="reset">검색 조건 초기화</a>
 		</td>
 	</tr>
 </table>

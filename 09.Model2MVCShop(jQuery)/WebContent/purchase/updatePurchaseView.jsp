@@ -8,7 +8,54 @@
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
 <title>구매정보 수정</title>
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+$(function(){
+	$("#cancel").on("click",function(){
+		cancel();
+	});
+	
+	$("#update").on("click",function(){
+		cancel();
+	});
+	
+	$("#datepicker").datepicker();
+	$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+});
+
+function fncAddProduct(){
+	//Form 유효성 검증
+ 	var name = $("input[name=prodName]").val();
+	var detail = $("input[name=prodDetail]").val();
+	var manuDate = $("input[name=manuDate]").val();
+	var price = $("input[name=price]").val();
+
+	if(name == null || name.length<1){
+		alert("상품명은 반드시 입력하여야 합니다.");
+		return;
+	}
+	if(detail == null || detail.length<1){
+		alert("상품상세정보는 반드시 입력하여야 합니다.");
+		return;
+	}
+	if(manuDate == null || manuDate.length<1){
+		alert("제조일자는 반드시 입력하셔야 합니다.");
+		return;
+	}
+	if(price == null || price.length<1){
+		alert("가격은 반드시 입력하셔야 합니다.");
+		return;
+	}
+		
+	$("form").attr("action","/purchase/updatePurchase");
+	$("form").attr("method","POST");
+	$("form").submit();
+}
+
+function cancel(){
+	history.go(-1);
+}
 <!--
 function fncUpdatePurchase() {
 	document.updatePurchase.submit();
@@ -22,7 +69,7 @@ function fncUpdatePurchase() {
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="updatePurchase" method="post" action="/purchase/updatePurchase">
+<form name="updatePurchase">
 <input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}">
 <input type="hidden" name="tranNo" value="${purchase.tranNo}">
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
@@ -61,8 +108,7 @@ function fncUpdatePurchase() {
 		<td width="104" class="ct_write">구매방법</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<select 	name="paymentOption" 	class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20">
+			<select name="paymentOption" class="ct_input_g" style="width: 100px; height: 19px" maxLength="20">
 				<option value="1" ${purchase.paymentOption eq '0'?"selected='selected'":""}>현금구매</option>
 				<option value="2" ${purchase.paymentOption eq '1'?"selected='selected'":""}>신용구매</option>
 			</select>
@@ -120,10 +166,7 @@ function fncUpdatePurchase() {
 		<td width="104" class="ct_write">배송희망일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td width="200" class="ct_write01">
-			<input type="text"  name="dlvyDate" class="ct_input_g" 
-						style="width: 100px; height: 19px" maxLength="20" value="${purchase.dlvyDate}"/>
-				<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
-							onclick="show_calendar('document.updatePurchase.dlvyDate', document.updatePurchase.dlvyDate.value)"/>
+			<input type="text" id="datepicker" name="dlvyDate" class="ct_input_g" style="width: 100px; height: 19px" maxLength="20" value="${purchase.dlvyDate}"/>
 		</td>
 	</tr>
 	<tr>
@@ -141,7 +184,7 @@ function fncUpdatePurchase() {
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01"	style="padding-top: 3px;">
-					<a href="javascript:fncUpdatePurchase();">수정</a>
+					<a href="#" id="update">수정</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -151,7 +194,7 @@ function fncUpdatePurchase() {
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<a href="javascript:history.go(-1)">취소</a>
+					<a href="#" id="cancel">취소</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23"/>

@@ -27,10 +27,10 @@
 		<td>구매방법</td>
 		<td>
 			<c:choose>
-				<c:when test="${purchase.paymentOption eq '1'}">
+				<c:when test="${purchase.paymentOption eq '0'}">
 					현금구매
 				</c:when>
-				<c:when test="${purchase.paymentOption eq '2'}">
+				<c:when test="${purchase.paymentOption eq '1'}">
 					신용구매
 				</c:when>
 			</c:choose>
