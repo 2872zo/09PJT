@@ -117,6 +117,17 @@
 		VALUES ( SEQ_PRODUCT_PROD_NO.CURRVAL, #{stock} )
 	</insert>
 	
+	<update id="updateProductStock" parameterType="product">
+		UPDATE
+		product_stock
+		<set>
+			stock = #{stock}
+		</set>
+		<where>
+			prod_no = #{prodNo}
+		</where>
+	</update>
+	
 	<select id="getProduct" parameterType="int" resultMap="productResultMap">
 		<include refid="select-product"/>
 		AND p.prod_no = #{value}

@@ -12,18 +12,21 @@
 	}
 	
 	$(function(){
-		$("td:contains('이전')").on("click",function(){
+		$("a:contains('이전')").on("click",function(){
 			history.go(-1);
 		});
 		
-		$("td:contains('구매')").on("click",function(){
+		$("a:contains('구매')").on("click",function(){
 			fncGetAddPurchaseView(${product.prodNo});
 		});
 		
-		$("td:contains('수정')").on("click",function(){
+		$("a:contains('수정')").on("click",function(){
 			location.href ="/product/updateProductView?prodNo=${product.prodNo}";
 		});
 		
+		$("a:contains('삭제')").on("click",function(){
+			location.href ="/product/deleteProduct?prodNo=${product.prodNo}";
+		});
 		
 	});
 	
@@ -55,9 +58,19 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						수정
+						<a>삭제</a>
 					</td>
+					<td width="14" height="23">
+						<img src="/images/ct_btnbg03.gif" width="14" height="23">
+					</td>
+					<td width="30"></td>
 					
+					<td width="17" height="23">
+						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
+					</td>
+					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+						<a>수정</a>
+					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
 					</td>
@@ -69,9 +82,8 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						구매
+						<a>구매</a>
 					</td>
-					
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
 					</td>
@@ -82,7 +94,7 @@
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					이전
+					<a>이전</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">

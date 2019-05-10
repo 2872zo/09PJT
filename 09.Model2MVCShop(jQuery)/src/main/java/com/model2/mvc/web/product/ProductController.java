@@ -58,12 +58,21 @@ public class ProductController {
 
 	@RequestMapping("addProduct")
 	public String addProduct(@ModelAttribute("product") Product product,@RequestParam("file") MultipartFile[] files, Model model) throws Exception {
-		if(files!=null) {
+		if(files!=null && files.length > 0) {
+			String fileName = null;
 			for (MultipartFile file : files) {
-				product.setFileName(product.getFileName() + file.getOriginalFilename());
-				File target = new File(savePath, file.getOriginalFilename());
-
-				FileCopyUtils.copy(file.getBytes(), target);
+				fileName = (fileName != null ? fileName+"," : "") + file.getOriginalFilename();
+				String originFileName = file.getOriginalFilename();
+				File target = new File(savePath, originFileName);
+				
+				if(!fileName.equals("")) {
+					FileCopyUtils.copy(file.getBytes(), target);
+				}
+			}
+			if(!fileName.equals("")) {
+				product.setFileName(fileName);
+			}else{
+				product.setFileName(null);
 			}
 		}
 		productService.addProduct(product);
@@ -202,13 +211,22 @@ public class ProductController {
 	public String updateProduct(@RequestParam("prodNo") int prodNo, @ModelAttribute Product product,
 			Map<String,String> map,@RequestParam("file") MultipartFile[] files) throws Exception {
 		
-		if(files!=null) {
+		if(files!=null && files.length > 0) {
+			String fileName = null;
 			for (MultipartFile file : files) {
-				product.setFileName(product.getFileName() + file.getOriginalFilename());
+				fileName = (fileName != null ? fileName+"," : "") + file.getOriginalFilename();
 				String originFileName = file.getOriginalFilename();
 				File target = new File(savePath, originFileName);
-
-				FileCopyUtils.copy(file.getBytes(), target);
+				System.out.println("==================" + fileName);
+				
+				if(!fileName.equals("")) {
+					FileCopyUtils.copy(file.getBytes(), target);
+				}
+			}
+			if(!fileName.equals("")) {
+				product.setFileName(fileName);
+			}else{
+				product.setFileName(null);
 			}
 		}
 		
@@ -226,6 +244,12 @@ public class ProductController {
 		map.put("product", productService.getProduct(prodNo));
 		
 		return "forward:/product/updateProductView.jsp";
+	}
+	
+	@RequestMapping("deleteProduct")
+	public String deleteProduct(@RequestParam("prodNo") int prodNo) throws Exception{
+		productService.deleteProduct(prodNo);
+		return "forward:/product/listProduct?menu=search";
 	}
 	
 	private List makeProductList(String menu, List<Product> productList, int currentPage) {

@@ -36,7 +36,7 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public int updateProduct(Product product) {
-		return sqlSession.update("ProductMapper.updateProduct", product);
+		return (sqlSession.update("ProductMapper.updateProduct", product)==1 && (sqlSession.update("ProductMapper.updateProductStock",product)==1)?1:0);
 	}
 
 	@Override
