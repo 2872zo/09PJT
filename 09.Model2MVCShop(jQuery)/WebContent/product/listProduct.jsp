@@ -12,8 +12,55 @@
 <title>구매 목록 조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+$(function(){
+	var prodNoList = [${prodNoList}];
+	
+	$("tr.ct_list_pop td:nth-child(3)").css("color","red");
+	$("tr.ct_list_pop td:nth-child(3)").on("click",function(){
+		location.href = "/product/getProduct?prodNo="+prodNoList[$($("td",$(this).parent())[0]).text()-1];
+	});	
+	
+	$("#searchKeyword").keydown(function(key){
+		if( key.keyCode==13 ){
+			fncGetList(${resultPage.currentPage});
+		}
+	});
+	$("#search").on("click",function(){
+		fncGetList(${resultPage.currentPage});
+	});
+	
+	$(".sort").on("click",function(){
+		fncSortList(${resultPage.currentPage},$(".sort").index($(this)));
+	});
+	
+	$("#unHidding").on("click",function(){
+		fncHiddingEmptyStock(${resultPage.currentPage},false);
+	});
+	$("#hidding").on("click",function(){
+		fncHiddingEmptyStock(${resultPage.currentPage},true);
+	});
+	
+	$("#reset").on("click",function(){
+		fncResetSearchCondition();
+	});
+	
+	$("select[name=pageSize]").on("change",function(){
+		fncGetList(${resultPage.currentPage});
+	});
+	
+	$("#prePage").on("click",function(){
+		fncGetList(${resultPage.beginUnitPage-1});
+	});
+	$(".page").on("click",function(){
+		fncGetList($(this).text());
+	});
+	$("#nextPage").on("click",function(){
+		fncGetList(${resultPage.endUnitPage+1});
+	});
+});
+
 function fncValidationCheck(){
 	var result = true;
 	
@@ -36,43 +83,45 @@ function fncValidationCheck(){
 	return result;
 }
 
-function fncGetProductList(currentPage){
-	document.detailForm.currentPage.value = currentPage;
-	document.detailForm.menu.value = "${param.menu}";
+function fncGetList(currentPage){
+// 	document.detailForm.currentPage.value = currentPage;
+	$("input[name=currentPage]").val(currentPage);
+// 	document.detailForm.menu.value = "${param.menu}";
+	$("input[name=menu]").val("${param.menu}");
 	
 	//검색 조건 Validation Check
 	if(!fncValidationCheck()){
 		return;
 	}
 
-	document.detailForm.submit();
+// 	document.detailForm.submit();
+	$("form[name=detailForm]").submit();
 }
 
 function fncSortList(currentPage, sortCode){
-	document.detailForm.currentPage.value = currentPage;
-	document.detailForm.menu.value = "${param.menu}";
-	document.detailForm.sortCode.value = sortCode;
+	$("input[name=currentPage]").val(currentPage);
+	$("input[name=menu]").val("${param.menu}");
+	$("input[name=sortCode]").val(sortCode);
 	
 	//검색 조건 Validation Check
 	if(!fncValidationCheck()){
 		return;
 	}
 
-	document.detailForm.submit();
+	$("form").submit();
 }
 
 function fncHiddingEmptyStock(currentPage, hiddingEmptyStock){
-	document.detailForm.currentPage.value = currentPage;
-	document.detailForm.menu.value = "${param.menu}";
-	document.detailForm.hiddingEmptyStock.value = hiddingEmptyStock;
+	$("input[name=currentPage]").val(currentPage);
+	$("input[name=menu]").val("${param.menu}");
+	$("input[name=hiddingEmptyStock]").val(hiddingEmptyStock);
 	
 	//검색 조건 Validation Check
 	if(!fncValidationCheck()){
 		return;
 	}
 
-	document.detailForm.submit();
-	
+	$("form").submit();
 }
 
 
@@ -83,8 +132,8 @@ function fncResetSearchCondition(){
 
 
 function fncUpdateTranCodeByProd(currentPage, prodNo){
-	document.detailForm.currentPage.value = currentPage;
-	document.detailForm.menu.value = "${param.menu}";
+	$("input[name=currentPage]").val(currentPage);
+	$("input[name=menu]").val("${param.menu}");
 	
 	//검색 조건 Validation Check
 	if(!fncValidationCheck()){
@@ -103,55 +152,50 @@ function fncUpdateTranCodeByProd(currentPage, prodNo){
 
 </script>
 </head>
-
 <body bgcolor="#ffffff" text="#000000">
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="/product/listProduct" method="post" onsubmit="return false">
+<form name="detailForm" action="/product/listProduct" method="post">
 
-<c:import url="../common/listPrinter.jsp">
-	<c:param name="domainName" value="Product"/>
-</c:import>
+<c:import url="../common/listPrinter.jsp"/>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">
-			<input type="hidden" id="currentPage" name="currentPage" value=""/>
+			<input type="hidden" id="currentPage" name="currentPage"/>
 			<input type="hidden" id="menu" name="menu" value=""/>
 			<input type="hidden" id="sortCode" name="sortCode" value="${search.sortCode}"/>
 			<input type="hidden" id="hiddingEmptyStock" name="hiddingEmptyStock" value="${search.hiddingEmptyStock}"/>
 			
-			<c:import url="../common/pageNavigator.jsp">
-				<c:param name="domainName" value="Product"/>
-			</c:import>	
+			<c:import url="../common/pageNavigator.jsp"/>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncSortList(${resultPage.currentPage},0)">상품 번호 오름차순</a>
+			<a href="#" class="sort">상품 번호 오름차순</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},1)">상품 번호 내림차순</a>
+			<a href="#" class="sort">상품 번호 내림차순</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},2)">상품 이름 오름차순</a>
+			<a href="#" class="sort">상품 이름 오름차순</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},3)">상품 이름 내림차순</a>
+			<a href="#" class="sort">상품 이름 내림차순</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},4)">가격 낮은순</a>
+			<a href="#" class="sort">가격 낮은순</a>
 			&nbsp;
-			<a href="javascript:fncSortList(${resultPage.currentPage},5)">가격 높은순</a>
+			<a href="#" class="sort">가격 높은순</a>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncHiddingEmptyStock(${resultPage.currentPage},true)">재고없는 상품 숨기기</a>
+			<a href="#" id="hidding">재고없는 상품 숨기기</a>
 			&nbsp;
-			<a href="javascript:fncHiddingEmptyStock(${resultPage.currentPage},false)">재고없는 상품 보기</a>
+			<a href="#" id="unHidding">모든 상품 보기</a>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="javascript:fncResetSearchCondition();">검색 조건 초기화</a>
+			<a href="#" id="reset">검색 조건 초기화</a>
 		</td>
 	</tr>
 </table>

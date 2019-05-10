@@ -1,5 +1,6 @@
 package com.model2.mvc.web.product;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,16 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.model2.mvc.common.Page;
@@ -38,22 +42,33 @@ public class ProductController {
 	@Autowired
 	@Qualifier("productService")
 	ProductService productService;
-
+	
 	@Value("#{commonProperties['pageUnit']}")
 	int pageUnit;
 
 	@Value("#{commonProperties['pageSize']}")
 	int pageSize;
-
+	
+	@Value("#{commonProperties['savePath']}")
+	String savePath;
+	
 	public ProductController() {
 		System.out.println(this.getClass());
 	}
 
 	@RequestMapping("addProduct")
-	public String addProduct(@ModelAttribute("product") Product product) throws Exception {
+	public String addProduct(@ModelAttribute("product") Product product,@RequestParam("file") MultipartFile[] files, Model model) throws Exception {
+		if(files!=null) {
+			for (MultipartFile file : files) {
+				product.setFileName(product.getFileName() + file.getOriginalFilename());
+				File target = new File(savePath, file.getOriginalFilename());
 
+				FileCopyUtils.copy(file.getBytes(), target);
+			}
+		}
 		productService.addProduct(product);
-
+		model.addAttribute(product);
+		
 		return "forward:/product/confirmProduct.jsp";
 	}
 
@@ -87,6 +102,7 @@ public class ProductController {
 		}
 		
 		cookie.setMaxAge(-1);
+		cookie.setPath("/");
 		response.addCookie(cookie);
 		
 		System.out.println("\n==>getProudct End.........");
@@ -165,6 +181,17 @@ public class ProductController {
 		resultMap.put("searchOptionList", searchOptionList);
 		resultMap.put("resultPage", resultPage);
 		
+		List<Product> prodList = (List<Product>) map.get("list");
+		String prodNoList = null;
+		if(prodList != null && prodList.size() > 0) {
+			prodNoList = String.valueOf(prodList.get(0).getProdNo());
+			for(int i=1;i<prodList.size();i++) {
+				prodNoList += "," + String.valueOf(prodList.get(i).getProdNo()); 
+			}
+			resultMap.put("prodNoList", prodNoList);			
+		}
+		
+		
 		System.out.println("\n==>listProudct-GET End.........");
 		
 		return "forward:/product/listProduct.jsp";
@@ -173,8 +200,19 @@ public class ProductController {
 
 	@RequestMapping("updateProduct")
 	public String updateProduct(@RequestParam("prodNo") int prodNo, @ModelAttribute Product product,
-			Map<String,String> map,	HttpServletRequest request) throws Exception {
+			Map<String,String> map,@RequestParam("file") MultipartFile[] files) throws Exception {
+		
+		if(files!=null) {
+			for (MultipartFile file : files) {
+				product.setFileName(product.getFileName() + file.getOriginalFilename());
+				String originFileName = file.getOriginalFilename();
+				File target = new File(savePath, originFileName);
 
+				FileCopyUtils.copy(file.getBytes(), target);
+			}
+		}
+		
+		
 		productService.updateProduct(product);
 
 		map.put("prodNo", String.valueOf(prodNo));
@@ -202,7 +240,8 @@ public class ProductController {
 			UnitDetail.add(String.valueOf(i + 1));
 			//2.제품 이름
 			String aTagGetProductStart = "<a href='/product/getProduct?prodNo=" + productList.get(i).getProdNo() + "\'>";
-			UnitDetail.add(aTagGetProductStart + productList.get(i).getProdName() + aTagEnd);
+//			UnitDetail.add(aTagGetProductStart + productList.get(i).getProdName() + aTagEnd);
+			UnitDetail.add(productList.get(i).getProdName());
 			//3.제품 가격
 			UnitDetail.add(String.valueOf(productList.get(i).getPrice()));
 			//4.제품 등록 날짜

@@ -14,15 +14,27 @@
 
 <script type="text/javascript" src="../javascript/calendar.js">
 </script>
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-<!--
-function fncAddProduct(){
+$(function(){
+	$("#cancel").on("click",function(){
+		cancel();
+	});
+	
+	$("#update").on("click",function(){
+		fncUpdateProduct();
+	});
+	
+	$("#datepicker").datepicker();
+	$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+});
+
+function fncUpdateProduct(){
 	//Form 유효성 검증
- 	var name = document.detailForm.prodName.value;
-	var detail = document.detailForm.prodDetail.value;
-	var manuDate = document.detailForm.manuDate.value;
-	var price = document.detailForm.price.value;
+ 	var name = $("input[name=prodName]").val();
+	var detail = $("input[name=prodDetail]").val();
+	var manuDate = $("input[name=manuDate]").val();
+	var price = $("input[name=price]").val();
 
 	if(name == null || name.length<1){
 		alert("상품명은 반드시 입력하여야 합니다.");
@@ -41,16 +53,20 @@ function fncAddProduct(){
 		return;
 	}
 		
-	document.detailForm.action='/product/updateProduct';
-	document.detailForm.submit();
+	$("form").attr("action","/product/updateProduct");
+	$("form").attr("method","POST");
+	$("form").submit();
 }
--->
+
+function cancel(){
+	history.go(-1);
+}
 </script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm" method="post">
+<form name="detailForm" enctype="multipart/form-data">
 
 <input type="hidden" name="prodNo" value="${product.prodNo}"/>
 
@@ -115,10 +131,7 @@ function fncAddProduct(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" readonly="readonly" name="manuDate" value="${product.manuDate}" 	
-						class="ct_input_g" style="width: 100px; height: 19px" maxLength="10" minLength="6">&nbsp;
-						<img 	src="../images/ct_icon_date.gif" width="15" height="15" 
-									onclick="show_calendar('document.detailForm.manuDate', document.detailForm.manuDate.value)" />
+			<input type="text" readonly="readonly" id="datepicker" name="manuDate" value="${product.manuDate}" 	class="ct_input_g" style="width: 100px; height: 19px" maxLength="10" minLength="6">
 		</td>
 	</tr>
 	<tr>
@@ -141,7 +154,7 @@ function fncAddProduct(){
 		<td width="104" class="ct_write">상품이미지</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input	type="text" name="fileName" class="ct_input_g" 
+			<input	type="file" name="fileName" class="ct_input_g" 
 						style="width: 200px; height: 19px" maxLength="13" value="${product.fileName}"/>
 		</td>
 	</tr>
@@ -160,7 +173,7 @@ function fncAddProduct(){
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01"	style="padding-top: 3px;">
-						<a href="javascript:fncAddProduct();">수정</a>
+						<a href="#" id="update">수정</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -170,7 +183,7 @@ function fncAddProduct(){
 						<img src="/images/ct_btnbg01.gif"width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="javascript:history.go(-1)">취소</a>
+						<a href="#" id="cancel">취소</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>

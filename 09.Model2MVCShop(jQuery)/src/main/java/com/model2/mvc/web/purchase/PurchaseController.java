@@ -159,6 +159,20 @@ public class PurchaseController {
 		modelAndView.addObject("columList", columList);
 		modelAndView.addObject("unitList", unitList);
 		modelAndView.addObject("resultPage", resultPage);
+		
+		String tranNoList= null;
+		String prodNoList= null;
+		System.out.println("purchaseController-list.size() : " + list.size());
+		if(list != null && list.size() > 0) {
+			tranNoList = String.valueOf(list.get(0).getTranNo());
+			prodNoList = String.valueOf(list.get(0).getPurchaseProd().getProdNo());
+			for (int i = 1; i < list.size(); i++) {
+				tranNoList += "," + list.get(i).getTranNo();
+				prodNoList += "," + list.get(i).getPurchaseProd().getProdNo();
+			}
+			modelAndView.addObject("tranNoList",tranNoList);
+			modelAndView.addObject("prodNoList",prodNoList);
+		}
 
 		System.out.println("\n==>listPurchase End.........");
 		
@@ -308,12 +322,14 @@ public class PurchaseController {
 			
 			String updatePurchaseTag = "<a href='/purchase/getPurchase?tranNo="+purchaseList.get(i).getTranNo()+"'>";
 			String aTagEnd = "</a>";
-			UnitDetail.add(updatePurchaseTag + String.valueOf(i+1) + aTagEnd);
+//			UnitDetail.add(updatePurchaseTag + String.valueOf(i+1) + aTagEnd);
+			UnitDetail.add(String.valueOf(i+1));
 			
 			UnitDetail.add(purchaseList.get(i).getBuyer().getUserId());
 			
 			String updateProductTagStart = "<a href='/product/getProduct?prodNo="+purchaseList.get(i).getPurchaseProd().getProdNo()+"'>";
-			UnitDetail.add(updateProductTagStart + purchaseList.get(i).getPurchaseProd().getProdName() + aTagEnd);
+//			UnitDetail.add(updateProductTagStart + purchaseList.get(i).getPurchaseProd().getProdName() + aTagEnd);
+			UnitDetail.add(purchaseList.get(i).getPurchaseProd().getProdName());
 			UnitDetail.add(String.valueOf(purchaseList.get(i).getQuantity()));
 			
 			//tranCode에 따른 상태값
@@ -333,10 +349,10 @@ public class PurchaseController {
 			}
 			//배송중인 경우에만 수취완료 표기
 			if(user.getRole().equals("admin") && purchaseList.get(i).getTranCode().equals("1")) {
-				UnitDetail.add("<a href='javascript:fncUpdatePurchaseCode(" + currentPage + "," + purchaseList.get(i).getTranNo() +", 2);'>" + "배송출발</a>");
+				UnitDetail.add("<a>배송출발</a>");
 			}
 			if(user.getRole().equals("user") && purchaseList.get(i).getTranCode().equals("2")) {
-				UnitDetail.add("<a href='javascript:fncUpdatePurchaseCode(" + currentPage + "," + purchaseList.get(i).getTranNo() +", 3);'>" + "수취확인</a>");
+				UnitDetail.add("<a>수취확인</a>");
 			}
 			unitList.add(UnitDetail);
 		}
