@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.purchase.PurchaseDao;
 import com.model2.mvc.service.purchase.PurchaseService;
@@ -71,4 +72,18 @@ public class PurchaseServiceImpl implements PurchaseService {
 		return 0;
 	}
 
+	@Override
+	public List<Product> getCartView(Search search) {
+		return purchaseDao.getCartView(search);
+	}
+
+	@Override
+	public void deleteCart(Search search) {
+		purchaseDao.deleteCart(search);		
+	}
+
+	@Override
+	public void addCart(Search search) {
+		purchaseDao.addCart(search);
+	}
 }

@@ -49,6 +49,12 @@
 		</td>
 	</tr>
 	<tr>
+		<c:if test="${!empty checkboxOn}">
+			<td class="ct_list_b"> 
+				<input type="checkbox">
+			</td>
+			<td class="ct_line02"></td>
+		</c:if>
 		<c:set var="i" value="0"/>
 		<c:forEach var="columName" items="${columList}">
 			<c:set var="i" value="${i+1}"/>
@@ -69,6 +75,14 @@
 	<c:forEach var="list" items="${unitList}">
 		<c:set var="i" value="${i+1}"/>
 		<tr class="ct_list_pop">
+		
+			<c:if test="${!empty checkboxOn}">
+				<td align="center"> 
+					<input class="listcheckbox" type="checkbox">
+				</td>
+				<td class="ct_line02"></td>
+			</c:if>
+			
 			<c:forEach var="detailUnit" items="${list}">
 				<td align="center">${detailUnit}</td>
 				<td></td>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.purchase.PurchaseDao;
 
@@ -17,6 +18,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 	@Autowired
 	@Qualifier("sqlSessionTemplate")
 	private SqlSession sqlSession;
+	
 	public void setSqlSession(SqlSession sqlSession) {
 		this.sqlSession = sqlSession;
 	}
@@ -27,7 +29,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 	
 	@Override
 	public int addPurchase(Purchase purchase) {
-		return (sqlSession.insert("PurchaseMapper.addPurchase", purchase)==1&&sqlSession.update("PurchaseMapper.updateStock",purchase)==1)?1:0;
+		return (sqlSession.insert("PurchaseMapper.addPurchase", purchase)==1 && sqlSession.update("ProductStockMapper.decreaseStock",purchase)==1)?1:0;
 	}
 
 	@Override
@@ -62,7 +64,21 @@ public class PurchaseDaoImpl implements PurchaseDao{
 
 	@Override
 	public int cancelTranCode(Purchase purchase) {
-		return sqlSession.update("PurchaseMapper.cancelPurchase", purchase);
+		return sqlSession.update("ProductStockMapper.cancelPurchase", purchase);
 	}
 
+	public List<Product> getCartView(Search search) {
+		return sqlSession.selectList("CartMapper.getCart",search);
+	}
+
+	@Override
+	public void deleteCart(Search search) {
+		System.out.println(sqlSession.delete("CartMapper.deleteCart",search));		
+	}
+
+	@Override
+	public void addCart(Search search) {
+		System.out.println(sqlSession.insert("CartMapper.addCart",search));		
+		
+	}
 }

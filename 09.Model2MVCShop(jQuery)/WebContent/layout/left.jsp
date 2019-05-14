@@ -130,6 +130,11 @@
 					<a href="/purchase/listPurchase"  target="rightFrame">구매이력조회</a>
 				</td>
 			</tr>
+			<tr>
+				<td class="Depth03">
+					<a href="/purchase/viewCart"  target="rightFrame">장바구니</a>
+				</td>
+			</tr>
 			</c:if>
 			
 			<tr>

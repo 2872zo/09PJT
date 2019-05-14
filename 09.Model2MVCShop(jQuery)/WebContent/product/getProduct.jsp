@@ -11,6 +11,21 @@
 		$("form").submit();
 	}
 	
+	function addCart(obj){
+		$.ajax(
+				{
+					url : "/purchase/addCart",
+					data : {
+						prodNo : obj
+					},
+					dataType : "json",
+					success : function() {
+						alert("장바구니에 추가되었습니다.");
+					}
+				}
+		);
+	}
+	
 	$(function(){
 		$("a:contains('이전')").on("click",function(){
 			history.go(-1);
@@ -26,6 +41,10 @@
 		
 		$("a:contains('삭제')").on("click",function(){
 			location.href ="/product/deleteProduct?prodNo=${product.prodNo}";
+		});
+		
+		$("a:contains('담기')").on("click",function(){
+			addCart(${product.prodNo});
 		});
 		
 	});
@@ -83,6 +102,17 @@
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
 						<a>구매</a>
+					</td>
+					<td width="14" height="23">
+						<img src="/images/ct_btnbg03.gif" width="14" height="23">
+					</td>
+					<td width="30"></td>
+					
+					<td width="17" height="23">
+						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
+					</td>
+					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+						<a>담기</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">

@@ -80,16 +80,7 @@
 				 )
 	</insert>
 	
-	<update id="updateStock" parameterType="purchase">
-		UPDATE
-		product_stock
-		<set>
-			stock = stock - #{quantity}
-		</set>
-		<where>
-			prod_no = #{purchaseProd.prodNo}
-		</where>
-	</update>
+	
 	
 	<select id="getPurchase" parameterType="int" resultMap="purchaseResultMap">
 		SELECT
@@ -139,15 +130,6 @@
   		</where> 
   	</update>
   	
-  	<update id="cancelPurchase" parameterType="purchase">
-  		UPDATE
-  		product_stock
-  		SET stock = stock + #{quantity}
-  		<where>
-  			prod_no = #{purchaseProd.prodNo}
-  		</where> 
-  	</update>
-	
 	<delete id="deletePurchase" parameterType="int">
 		DELETE
 		FROM transaction 
@@ -177,4 +159,17 @@
 			row_seq BETWEEN #{startRowNum} AND #{endRowNum}
 		</where>
 	</select>
+	
+	<insert id="addCart" parameterType="Map">
+		INSERT
+		INTO cart ( user_id, prod_no)
+		VALUES (${userId},${prodNo})
+	</insert>
+	
+	<update id="updateCart" parameterType="Map">
+		UPDATE
+		cart
+		SET prod_no = ${prodNo}
+		WHERE user_id = ${userId}
+	</update>
 </mapper>
