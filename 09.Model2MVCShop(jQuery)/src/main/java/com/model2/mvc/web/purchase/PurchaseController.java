@@ -8,6 +8,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -311,6 +312,112 @@ public class PurchaseController {
 		System.out.println("\n==>listPurchase End.........");
 		
 		return modelAndView;
+	}
+	
+	@RequestMapping("viewCart")
+	public ModelAndView viewCart(HttpSession session) {
+		ModelAndView modelAndView = new ModelAndView("/purchase/viewCart.jsp");
+		
+		User user = (User)session.getAttribute("user");
+		Search search = new Search();
+		search.setUserId(user.getUserId());
+		List<Product> productList = purchaseService.getCartView(search);
+		
+		/// 6.JSP에 출력을 하기위한 설정들
+		// searchOptionList 설정
+		List<String> searchOptionList = new Vector<String>();
+		searchOptionList.add("상품번호");
+		searchOptionList.add("상품명");
+		searchOptionList.add("상품가격");
+
+		// title 설정
+		String title = "장바구니";
+
+		// colum 설정
+		List<String> columList = new ArrayList<String>();
+		columList.add("No");
+		columList.add("제품번호");
+		columList.add("상품명");
+		columList.add("가격");
+		columList.add("구매수량");
+		columList.add("삭제");
+
+		// UnitList 설정
+		List unitList = makeProductList(productList);
+
+		// 출력을 위한 Obejct들
+
+		modelAndView.addObject("title", title);
+		modelAndView.addObject("columList", columList);
+		modelAndView.addObject("unitList", unitList);
+
+		List<Product> prodList = productList;
+		String prodNoList = null;
+		if (prodList != null && prodList.size() > 0) {
+			prodNoList = String.valueOf(prodList.get(0).getProdNo());
+			for (int i = 1; i < prodList.size(); i++) {
+				prodNoList += "," + String.valueOf(prodList.get(i).getProdNo());
+			}
+			modelAndView.addObject("prodNoList", prodNoList);
+		}
+		
+		modelAndView.addObject("user",user);
+		modelAndView.addObject("checkboxOn",true);
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping("deleteCart")
+	public void deleteCart(@RequestParam("prodNo") int prodNo,HttpSession session) {
+		Search search = new Search();
+		search.setUserId(((User)session.getAttribute("user")).getUserId());
+		search.setProdNo(prodNo);
+				
+		purchaseService.deleteCart(search);
+	}
+	
+	@RequestMapping("addCart")
+	public void addCart(@RequestParam("prodNo") int prodNo,HttpSession session) {
+		Search search = new Search();
+		search.setUserId(((User)session.getAttribute("user")).getUserId());
+		search.setProdNo(prodNo);
+				
+		purchaseService.addCart(search);
+	}
+	
+	@RequestMapping("addPurchaseByCart")
+	public void addPurchaseByCart(@ModelAttribute Purchase purchase, @RequestParam("prodNo") String prodNo) {
+		String[] prodNoList = prodNo.split(",");
+		System.out.println("purchase : " + purchase);
+		System.out.println("prodNo : " + prodNo);
+				
+//		purchaseService.addPurchaseByCart(purchase,prodNoList);
+	}
+	
+	private List makeProductList(List<Product> productList) {
+		List<List> unitList = new Vector<List>();
+		List<String> UnitDetail = null;
+		
+		for (int i = 0; i < productList.size(); i++) {
+			System.out.println(productList.get(i));
+			UnitDetail = new Vector<String>();
+			//1.제품 순서 번호
+			UnitDetail.add(String.valueOf(i + 1));
+			//2.제품 번호
+			UnitDetail.add(String.valueOf(productList.get(i).getProdNo()));
+			//3.제품 이름
+			UnitDetail.add(productList.get(i).getProdName());
+			//4.제품 가격
+			UnitDetail.add(String.valueOf(productList.get(i).getPrice()));
+			//5.구매 수량
+			UnitDetail.add(String.valueOf(productList.get(i).getStock()));
+			//6.장바구니 삭제
+			UnitDetail.add("<img src='../images/trash.png'/>");
+			
+			//1~6과정을 통해 만들어진 리스트를 삽입
+			unitList.add(UnitDetail);
+		}
+		return unitList;
 	}
 	
 	private List makePurchaseList(int currentPage, List<Purchase> purchaseList, User user) {
