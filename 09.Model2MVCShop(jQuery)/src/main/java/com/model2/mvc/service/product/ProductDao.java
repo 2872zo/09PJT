@@ -6,15 +6,15 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 
 public interface ProductDao {
-	public int addProduct(Product product); 
+	public int addProduct(Product product) throws Exception; 
 	
-	public Product getProduct(int prodNo);
+	public Product getProduct(int prodNo) throws Exception;
 	
-	public int updateProduct(Product product);
+	public int updateProduct(Product product) throws Exception;
 	
-	public int deleteProduct(int prodNo);
+	public int deleteProduct(int prodNo) throws Exception;
 	
-	public List<Product> getProductList(Search search);
+	public List<Product> getProductList(Search search) throws Exception;
 
-	public int makeTotalCount(Search search);
+	public int makeTotalCount(Search search) throws Exception;
 }

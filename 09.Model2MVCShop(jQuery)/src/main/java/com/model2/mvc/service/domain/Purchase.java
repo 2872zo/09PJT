@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Purchase {
+public class Purchase implements Cloneable{
 	
 	private int tranNo;
 	private Product purchaseProd;
@@ -130,5 +130,10 @@ public class Purchase {
 		purchaseList.add("주문일,"+orderDate);
 		
 		return purchaseList;
+	}
+	
+	@Override
+	public Purchase clone() throws CloneNotSupportedException { // public 으로 바꿔주자.
+		return (Purchase) super.clone();
 	}
 }

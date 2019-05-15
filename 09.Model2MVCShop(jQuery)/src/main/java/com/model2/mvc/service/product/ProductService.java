@@ -6,13 +6,13 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 
 public interface ProductService {
-	public int addProduct(Product product); 
+	public int addProduct(Product product) throws Exception; 
 	
-	public Product getProduct(int prodNo);
+	public Product getProduct(int prodNo) throws Exception;
 	
-	public int updateProduct(Product product);
+	public int updateProduct(Product product) throws Exception;
 	
-	public int deleteProduct(int prodNo);
+	public int deleteProduct(int prodNo) throws Exception;
 	
-	public Map<String,Object> getProductList(Search search);
+	public Map<String,Object> getProductList(Search search) throws Exception;
 }

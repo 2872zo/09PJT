@@ -82,7 +82,7 @@ public class PurchaseRestController {
 	}
 	
 	@RequestMapping("json/cancelPurchase")
-	public boolean cancelPurchase(@RequestParam("tranNo") int tranNo) {
+	public boolean cancelPurchase(@RequestParam("tranNo") int tranNo) throws Exception {
 		Purchase purchase = new Purchase();
 		purchase.setTranNo(tranNo);
 		purchase.setTranCode("0");

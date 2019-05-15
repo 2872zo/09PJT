@@ -3,8 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-	$(function(){
-		$(".ct_list_pop:nth-child(4n+6)").css("background","whitesmoke");
+	var jb = jQuery.noConflict();
+
+	jb(function(){
+		jb(".ct_list_pop:nth-child(4n+6)").css("background","whitesmoke");
 	});
 </script>
 

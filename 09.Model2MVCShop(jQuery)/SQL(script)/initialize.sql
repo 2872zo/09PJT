@@ -130,6 +130,38 @@ insert into product values (seq_product_prod_no.nextval,'삼성센스','노트북','201
 
 commit;
 
+//INSERTALL을 위해 function생성
+CREATE OR REPLACE Function get_seq_tran_no
+return number 
+is
+seq_tran_no NUMBER;
+BEGIN
+SELECT SEQ_TRANSACTION_TRAN_NO.nextval
+INTO seq_tran_no
+FROM DUAL;
+RETURN seq_tran_no;
+End;
+
+select
+get_seq_tran_no
+from dual;
+
+ALTER TABLE product
+MODIFY (manufacture_day VARCHAR(10));
+
+CREATE TABLE product_stock(
+	prod_no NUMBER(5) NOT NULL,
+	stock NUMBER(5) NOT NULL
+	CONSTRAINT product_stock_FK FOREIGN KEY (prod_no) REFERENCES product(prod_no) ON DELETE CASCADE
+)
+
+CREATE TABLE cart(
+	user_id VARCHAR(15) NOT NULL,
+	prod_no NUMBER(5) NOT NULL
+	CONSTRAINT cart_FK FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+)
+
+
 
 
 //== Page 처리을 위한 SQL 구성연습

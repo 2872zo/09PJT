@@ -28,32 +28,32 @@ public class PurchaseServiceImpl implements PurchaseService {
 	}
 	
 	@Override
-	public int addPurchase(Purchase purchase) {
+	public int addPurchase(Purchase purchase) throws Exception {
 		return purchaseDao.addPurchase(purchase);
 	}
 
 	@Override
-	public Purchase getPurchase(int tranNo) {
+	public Purchase getPurchase(int tranNo) throws Exception {
 		return purchaseDao.getPurchase(tranNo);
 	}
 
 	@Override
-	public int updatePurchase(Purchase purchase) {
+	public int updatePurchase(Purchase purchase) throws Exception {
 		return purchaseDao.updatePurchase(purchase);
 	}
 	
 	@Override
-	public int updateTranCode(Purchase purchase) {
+	public int updateTranCode(Purchase purchase) throws Exception {
 		return purchaseDao.updateTranCode(purchase);
 	}
 
 	@Override
-	public int deletePurchase(int tranNo) {
+	public int deletePurchase(int tranNo) throws Exception {
 		return purchaseDao.deletePurchase(tranNo);
 	}
 
 	@Override
-	public Map<String, Object> getPurchaseList(Search search) {
+	public Map<String, Object> getPurchaseList(Search search)  throws Exception{
 		List<Purchase> list = purchaseDao.getPurchaseList(search);
 		int totalCount = purchaseDao.makeTotalCount(search);
 
@@ -65,7 +65,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 	}
 
 	@Override
-	public int cancelTranCode(Purchase purchase) {
+	public int cancelTranCode(Purchase purchase) throws Exception {
 		purchaseDao.updateTranCode(purchase);
 		purchase = purchaseDao.getPurchase(purchase.getTranNo());
 		purchaseDao.cancelTranCode(purchase);
@@ -73,17 +73,22 @@ public class PurchaseServiceImpl implements PurchaseService {
 	}
 
 	@Override
-	public List<Product> getCartView(Search search) {
+	public List<Product> getCartView(Search search) throws Exception {
 		return purchaseDao.getCartView(search);
 	}
 
 	@Override
-	public void deleteCart(Search search) {
+	public void deleteCart(Search search) throws Exception {
 		purchaseDao.deleteCart(search);		
 	}
 
 	@Override
-	public void addCart(Search search) {
+	public void addCart(Search search) throws Exception {
 		purchaseDao.addCart(search);
+	}
+
+	@Override
+	public void addPurchaseByCart(List<Purchase> purchaseList)  throws Exception{
+		purchaseDao.addPurchaseByCart(purchaseList);
 	}
 }

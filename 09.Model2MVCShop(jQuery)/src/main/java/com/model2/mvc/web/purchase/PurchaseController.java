@@ -1,5 +1,6 @@
 package com.model2.mvc.web.purchase;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.model2.mvc.common.Page;
@@ -242,7 +247,7 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping("cancelPurchase")
-	public ModelAndView cancelPurchase(@RequestParam("tranNo") int tranNo) {
+	public ModelAndView cancelPurchase(@RequestParam("tranNo") int tranNo) throws Exception {
 		Purchase purchase = new Purchase();
 		purchase.setTranNo(tranNo);
 		purchase.setTranCode("0");
@@ -255,7 +260,7 @@ public class PurchaseController {
 	@RequestMapping("listSale")
 	public ModelAndView getSaleList(HttpServletRequest request,@RequestParam int prodNo, HttpSession session, 
 					@RequestParam(value="currentPage",defaultValue="1") int currentPage,
-					@ModelAttribute Search search) {
+					@ModelAttribute Search search) throws Exception {
 		System.out.println("\n==>listPurchase Start.........");
 		
 		User user = (User)session.getAttribute("user");
@@ -315,7 +320,7 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping("viewCart")
-	public ModelAndView viewCart(HttpSession session) {
+	public ModelAndView viewCart(HttpSession session) throws Exception {
 		ModelAndView modelAndView = new ModelAndView("/purchase/viewCart.jsp");
 		
 		User user = (User)session.getAttribute("user");
@@ -368,7 +373,7 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping("deleteCart")
-	public void deleteCart(@RequestParam("prodNo") int prodNo,HttpSession session) {
+	public void deleteCart(@RequestParam("prodNo") int prodNo,HttpSession session) throws Exception {
 		Search search = new Search();
 		search.setUserId(((User)session.getAttribute("user")).getUserId());
 		search.setProdNo(prodNo);
@@ -377,7 +382,7 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping("addCart")
-	public void addCart(@RequestParam("prodNo") int prodNo,HttpSession session) {
+	public void addCart(@RequestParam("prodNo") int prodNo,HttpSession session) throws Exception {
 		Search search = new Search();
 		search.setUserId(((User)session.getAttribute("user")).getUserId());
 		search.setProdNo(prodNo);
@@ -386,12 +391,28 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping("addPurchaseByCart")
-	public void addPurchaseByCart(@ModelAttribute Purchase purchase, @RequestParam("prodNo") String prodNo) {
-		String[] prodNoList = prodNo.split(",");
-		System.out.println("purchase : " + purchase);
-		System.out.println("prodNo : " + prodNo);
-				
-//		purchaseService.addPurchaseByCart(purchase,prodNoList);
+	public void addPurchaseByCart(@ModelAttribute("purchase") Purchase purchase,@RequestParam("jsonData") String jsonData,
+			HttpSession session) throws Exception{
+		System.out.println(purchase);
+		System.out.println(jsonData);
+		
+//		JSONArray jsonObject = (JSONArray)JSONValue.parse(jsonData);
+//		System.out.println("jsonObject : " + jsonObject);
+//		
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Product> list = objectMapper.readValue(jsonData, new TypeReference<List<Product>>() {});
+		
+		System.out.println("list : " + list);
+		User user = (User)session.getAttribute("user");
+		purchase.setBuyer(user);
+		
+		List<Purchase> purchaseList = new ArrayList<Purchase>();
+		for(int i = 0; i < list.size(); i++) {
+			purchase.setPurchaseProd(list.get(i));
+			purchaseList.add(purchase.clone());
+		}
+	
+		purchaseService.addPurchaseByCart(purchaseList);
 	}
 	
 	private List makeProductList(List<Product> productList) {

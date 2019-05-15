@@ -27,27 +27,27 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	@Override
-	public int addProduct(Product product) {
+	public int addProduct(Product product) throws Exception {
 		return productDao.addProduct(product);
 	}
 
 	@Override
-	public Product getProduct(int prodNo) {
+	public Product getProduct(int prodNo)  throws Exception{
 		return productDao.getProduct(prodNo);
 	}
 
 	@Override
-	public int updateProduct(Product product) {
+	public int updateProduct(Product product)  throws Exception{
 		return productDao.updateProduct(product);
 	}
 
 	@Override
-	public int deleteProduct(int prodNo) {
+	public int deleteProduct(int prodNo)  throws Exception{
 		return productDao.deleteProduct(prodNo);
 	}
 
 	@Override
-	public Map<String,Object> getProductList(Search search) {
+	public Map<String,Object> getProductList(Search search)  throws Exception{
 		List<Product> list = productDao.getProductList(search);
 		int totalCount = productDao.makeTotalCount(search);
 		
