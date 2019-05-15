@@ -59,6 +59,32 @@ $(function(){
 	$("#nextPage").on("click",function(){
 		fncGetList(${resultPage.endUnitPage+1});
 	});
+	
+	$("#empty").on("click",function(){
+		$("#listPrinter").empty()
+		
+		$.ajax({url:"../common/listPrinter.jsp",
+
+				success:function(result) {
+
+				$("#listPrinter").html(result);
+
+		}});
+		
+		$("#div1").load("../common/listPrinter.jsp", function(responseTxt, statusTxt, xhr){
+
+	        if(statusTxt == "success")
+
+	            alert("External content loaded successfully!");
+	        	$("#listPrinter").html(responseTxt);
+
+	        if(statusTxt == "error")
+
+	            alert("Error: " + xhr.status + ": " + xhr.statusText);
+
+	    });
+	});
+	
 });
 
 function fncValidationCheck(){
@@ -196,6 +222,11 @@ function fncUpdateTranCodeByProd(currentPage, prodNo){
 	<tr>
 		<td align="center">
 			<a href="#" id="reset">검색 조건 초기화</a>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<a href="#" id="empty">listprinter.empty()</a>
 		</td>
 	</tr>
 </table>
