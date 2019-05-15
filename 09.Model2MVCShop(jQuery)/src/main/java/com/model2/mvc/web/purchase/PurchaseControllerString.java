@@ -215,7 +215,7 @@ public class PurchaseControllerString {
 	}
 	
 	@RequestMapping("/cancelPurchase.do")
-	public String cancelPurchase(@RequestParam("tranNo") int tranNo) {
+	public String cancelPurchase(@RequestParam("tranNo") int tranNo) throws Exception {
 		Purchase purchase = new Purchase();
 		purchase.setTranNo(tranNo);
 		purchase.setTranCode("0");

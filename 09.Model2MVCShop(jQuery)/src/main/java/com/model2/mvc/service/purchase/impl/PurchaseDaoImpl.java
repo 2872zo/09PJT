@@ -19,66 +19,71 @@ public class PurchaseDaoImpl implements PurchaseDao{
 	@Qualifier("sqlSessionTemplate")
 	private SqlSession sqlSession;
 	
-	public void setSqlSession(SqlSession sqlSession) {
+	public void setSqlSession(SqlSession sqlSession)  throws Exception{
 		this.sqlSession = sqlSession;
 	}
 
-	public PurchaseDaoImpl() {
+	public PurchaseDaoImpl()  throws Exception{
 		System.out.println(this.getClass());
 	}
 	
 	@Override
-	public int addPurchase(Purchase purchase) {
+	public int addPurchase(Purchase purchase)  throws Exception{
 		return (sqlSession.insert("PurchaseMapper.addPurchase", purchase)==1 && sqlSession.update("ProductStockMapper.decreaseStock",purchase)==1)?1:0;
 	}
 
 	@Override
-	public Purchase getPurchase(int tranNo) {
+	public Purchase getPurchase(int tranNo)  throws Exception{
 		return sqlSession.selectOne("PurchaseMapper.getPurchase", tranNo);
 	}
 
 	@Override
-	public int updatePurchase(Purchase purchase) {
+	public int updatePurchase(Purchase purchase)  throws Exception{
 		return sqlSession.update("PurchaseMapper.updatePurchase", purchase);
 	}
 	
 	@Override
-	public int updateTranCode(Purchase purchase) {
+	public int updateTranCode(Purchase purchase) throws Exception {
 		return sqlSession.update("PurchaseMapper.updateTranCode", purchase);
 	}
 
 	@Override
-	public int deletePurchase(int tranNo) {
+	public int deletePurchase(int tranNo) throws Exception {
 		return sqlSession.delete("PurchaseMapper.deletePurchase", tranNo);
 	}
 
 	@Override
-	public List<Purchase> getPurchaseList(Search search) {
+	public List<Purchase> getPurchaseList(Search search) throws Exception {
 		return sqlSession.selectList("PurchaseMapper.getPurchaseList", search);
 	}
 
 	@Override
-	public int makeTotalCount(Search search) {
+	public int makeTotalCount(Search search) throws Exception {
 		return sqlSession.selectOne("PurchaseMapper.makeTotalCount", search);
 	}
 
 	@Override
-	public int cancelTranCode(Purchase purchase) {
+	public int cancelTranCode(Purchase purchase) throws Exception {
 		return sqlSession.update("ProductStockMapper.cancelPurchase", purchase);
 	}
 
-	public List<Product> getCartView(Search search) {
+	public List<Product> getCartView(Search search) throws Exception {
 		return sqlSession.selectList("CartMapper.getCart",search);
 	}
 
 	@Override
-	public void deleteCart(Search search) {
+	public void deleteCart(Search search) throws Exception {
 		System.out.println(sqlSession.delete("CartMapper.deleteCart",search));		
 	}
 
 	@Override
-	public void addCart(Search search) {
+	public void addCart(Search search) throws Exception {
 		System.out.println(sqlSession.insert("CartMapper.addCart",search));		
 		
+	}
+
+	@Override
+	public void addPurchaseByCart(List<Purchase> purchaseList) throws Exception {
+		System.out.println(sqlSession.insert("PurchaseMapper.addPurchaseByCart",purchaseList));
 	}
 }

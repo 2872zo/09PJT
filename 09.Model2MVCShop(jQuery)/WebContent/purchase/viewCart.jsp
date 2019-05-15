@@ -10,36 +10,45 @@
 	<script type="text/javascript">
 	function addPurchaseByCart(){
 		countCheck = $(".listcheckbox:checkbox:checked").length
+		
 		var prodNo = "";
 		if(countCheck < 1){
 			alert("구매할 상품을 선택하십시오.");
 			return;
 		}else{
+			var productArray = new Array();
+			
 			for(var i = 0; i < $(".listcheckbox:checkbox:checked").length; i++){
-				if(i==0){
-					prodNo = $($($(".listcheckbox:checkbox:checked")[i]).parent().parent().children()[4]).text().trim();
-				}else{
-					prodNo += ","+$($($(".listcheckbox:checkbox:checked")[i]).parent().parent().children()[4]).text().trim();
-				}
+				var product = new Object();
+				
+				product.prodNo = $($($(".listcheckbox:checkbox:checked")[i]).parent().parent().children()[4]).text().trim();
+				product.stock = $($($(".listcheckbox:checkbox:checked")[i]).parent().parent().find("select")).val();
+				
+				productArray.push(product);
 			}
 		}
+		
+		var queryString = $("form").serialize();
+		queryString += "&jsonData="+JSON.stringify(productArray);
 		
 		$.ajax(
 				{
 					url : "/purchase/addPurchaseByCart",
-					data : {
-						"prodNo" : prodNo
-					},
+					method : "POST",
+					data : queryString,
 					dataType : "json",
-					success : function(status) {
-						alert(status);
-						obj.remove();
+					error:function(status){
+						alert("error : " + status);
+					},
+					success : function() {
+						alert("success");
+						for(var i = 0; i < $(".listcheckbox:checkbox:checked").length; i++){
+							deleteCart($($(".listcheckbox:checkbox:checked")[i]).parent().parent());							
+						}
+						location.href = "/purchase/listPurchase";
 					}
 				}
 		);
-		
-// 		$("input[name=prodNo]").val(prodNo);
-// 		$("form").attr("method","post").attr("action","/purchase/addPurchaseByCart").submit();
 	}	
 	
 	function deleteCart(obj){
@@ -50,8 +59,7 @@
 						prodNo : $(obj.children()[4]).text().trim()
 					},
 					dataType : "json",
-					success : function(status) {
-						alert(status);
+					success : function() {
 						obj.remove();
 					}
 				}
@@ -97,7 +105,7 @@
 	
 	$(function(){
 		$("#datepicker").datepicker();
-// 		$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+		$( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
 		
 		makeSelect($("tr.ct_list_pop td:nth-child(11)"));
 		

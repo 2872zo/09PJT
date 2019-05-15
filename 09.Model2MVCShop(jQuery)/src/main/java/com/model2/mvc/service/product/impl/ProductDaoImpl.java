@@ -25,32 +25,32 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public int addProduct(Product product) {		
+	public int addProduct(Product product)  throws Exception{		
 		return (sqlSession.insert("ProductMapper.addProduct", product)==1 && (sqlSession.insert("ProductStockMapper.addProductStock",product)==1)?1:0);
 	}
 
 	@Override
-	public Product getProduct(int prodNo) {
+	public Product getProduct(int prodNo)  throws Exception{
 		return sqlSession.selectOne("ProductMapper.getProduct", prodNo);
 	}
 
 	@Override
-	public int updateProduct(Product product) {
+	public int updateProduct(Product product)  throws Exception{
 		return (sqlSession.update("ProductMapper.updateProduct", product)==1 && (sqlSession.update("ProductStockMapper.updateProductStock",product)==1)?1:0);
 	}
 
 	@Override
-	public int deleteProduct(int prodNo) {
+	public int deleteProduct(int prodNo)  throws Exception{
 		return sqlSession.delete("ProductMapper.deleteProduct", prodNo);
 	}
 
 	@Override
-	public List<Product> getProductList(Search search) {
+	public List<Product> getProductList(Search search)  throws Exception{
 		return sqlSession.selectList("ProductMapper.getProductList", search);
 	}
 
 	@Override
-	public int makeTotalCount(Search search) {
+	public int makeTotalCount(Search search)  throws Exception{
 		return sqlSession.selectOne("ProductMapper.makeTotalCount", search);
 	}
 

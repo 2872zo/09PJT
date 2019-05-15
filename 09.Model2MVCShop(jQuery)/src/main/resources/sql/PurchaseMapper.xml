@@ -65,7 +65,7 @@
 				,dlvy_date 		
 				,quantity
 		)
-		VALUES ( SEQ_TRANSACTION_TRAN_NO.NEXTVAL 
+		VALUES ( get_seq_tran_no()
 				 ,#{purchaseProd.prodNo:NUMERIC}
 				 ,#{buyer.userId:VARCHAR}
 				 ,#{paymentOption:CHAR}
@@ -78,6 +78,40 @@
 				 ,#{dlvyDate:DATE}
 				 ,#{quantity:NUMERIC}
 				 )
+	</insert>
+	
+	<insert id="addPurchaseByCart" parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="item" separator="     ">
+		INTO transaction ( 
+				tran_no		
+				,prod_no
+				,buyer_id	
+				,payment_option 
+				,receiver_name	
+				,receiver_phone 
+				,demailaddr 	
+				,dlvy_request 	
+				,tran_status_code
+				,order_date 	
+				,dlvy_date 		
+				,quantity
+		)
+		VALUES 
+				 (GET_SEQ_TRAN_NO()
+				 ,#{item.purchaseProd.prodNo:NUMERIC}
+				 ,#{item.buyer.userId:VARCHAR}
+				 ,#{item.paymentOption:CHAR}
+				 ,#{item.receiverName:VARCHAR}
+				 ,#{item.receiverPhone:VARCHAR}
+				 ,#{item.dlvyAddr:VARCHAR}
+				 ,#{item.dlvyRequest:VARCHAR}
+				 ,1
+				 ,SYSDATE
+				 ,#{item.dlvyDate:DATE}
+				 ,#{item.quantity:NUMERIC})				 
+		</foreach>
+		SELECT * FROM DUAL
 	</insert>
 	
 	

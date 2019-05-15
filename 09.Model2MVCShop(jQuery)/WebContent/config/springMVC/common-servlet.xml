@@ -76,6 +76,7 @@
 			<props>
 				<prop key="java.lang.NullPointerException">/common/nullError.jsp</prop>
 				<prop key="java.lang.NumberFormatException">/common/numberFormatError.jsp</prop>
+				<prop key="java.sql.SQLException">/common/sqlError.jsp</prop>
 			</props>
 		</property>
 		
