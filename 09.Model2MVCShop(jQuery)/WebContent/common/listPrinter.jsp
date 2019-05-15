@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=euc-kr" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<span id="listPrinter">
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	var jb = jQuery.noConflict();
@@ -95,6 +96,6 @@
 		</tr>
 	</c:forEach>
 </table>
-
+</span>
 
 

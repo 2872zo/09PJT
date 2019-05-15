@@ -41,7 +41,6 @@
 						alert("error : " + status);
 					},
 					success : function() {
-						alert("success");
 						for(var i = 0; i < $(".listcheckbox:checkbox:checked").length; i++){
 							deleteCart($($(".listcheckbox:checkbox:checked")[i]).parent().parent());							
 						}
